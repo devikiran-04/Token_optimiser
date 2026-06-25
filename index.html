@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Token Optimizer - Slate Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -50,7 +51,6 @@
             gap: 24px;
         }
 
-        /* Header */
         header {
             text-align: center;
             padding: 20px 0 10px 0;
@@ -84,7 +84,6 @@
             font-weight: 500;
         }
 
-        /* Card */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -103,7 +102,6 @@
             }
         }
 
-        /* Input Section */
         .input-section {
             display: flex;
             flex-direction: column;
@@ -174,7 +172,6 @@
             padding: 4px 12px;
         }
 
-        /* Upload Zone */
         .upload-zone {
             border: 2px dashed var(--border);
             border-radius: 12px;
@@ -246,7 +243,6 @@
             border: none;
         }
 
-        /* Mode Selector */
         .mode-selector {
             display: flex;
             align-items: center;
@@ -277,7 +273,6 @@
             border-color: var(--primary);
         }
 
-        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 12px;
@@ -324,7 +319,6 @@
             color: var(--text);
         }
 
-        /* Output Section */
         .output-section {
             display: flex;
             flex-direction: column;
@@ -384,7 +378,6 @@
             padding: 40px 0;
         }
 
-        /* Stats */
         .stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -420,7 +413,6 @@
             -webkit-text-fill-color: var(--success);
         }
 
-        /* Examples */
         .examples {
             text-align: center;
             padding: 12px 0;
@@ -456,7 +448,6 @@
             border-color: var(--primary);
         }
 
-        /* Footer */
         footer {
             text-align: center;
             color: var(--text-muted);
@@ -464,7 +455,6 @@
             padding: 12px 0;
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -483,7 +473,6 @@
             background: var(--primary);
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .card {
                 padding: 16px;
@@ -510,7 +499,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header>
             <div class="logo">
                 <span class="logo-icon">⚡</span>
@@ -519,16 +507,13 @@
             <p class="tagline">Compress noise. Never compress risk.</p>
         </header>
 
-        <!-- Main Card -->
         <div class="card">
-            <!-- Input Section -->
             <div class="input-section">
                 <div class="tabs">
                     <button class="tab active" data-tab="text">📝 Paste Text</button>
                     <button class="tab" data-tab="file">📁 Upload File</button>
                 </div>
 
-                <!-- Text Input -->
                 <div class="tab-content active" id="text-tab">
                     <textarea id="inputText" placeholder="Paste your verbose AI agent output, code review, commit message, or any text you want to optimize..."></textarea>
                     <div class="char-count">
@@ -536,7 +521,6 @@
                     </div>
                 </div>
 
-                <!-- File Upload -->
                 <div class="tab-content" id="file-tab">
                     <div class="upload-zone" id="uploadZone">
                         <div class="upload-icon">📄</div>
@@ -547,7 +531,6 @@
                     <div id="fileList" class="file-list"></div>
                 </div>
 
-                <!-- Optimization Mode -->
                 <div class="mode-selector">
                     <label>Optimization Mode:</label>
                     <select id="optimizationMode">
@@ -561,7 +544,6 @@
                     </select>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="action-buttons">
                     <button id="optimizeBtn" class="btn-primary">
                         <span>⚡</span> Optimize
@@ -570,7 +552,6 @@
                 </div>
             </div>
 
-            <!-- Output Section -->
             <div class="output-section">
                 <div class="output-header">
                     <h3>Optimized Output</h3>
@@ -583,7 +564,7 @@
                 <div id="outputContent" class="output-content">
                     <p class="placeholder">Your optimized output will appear here...</p>
                 </div>
-                <div class="stats" id="stats">
+                <div class="stats">
                     <div class="stat-item">
                         <span class="stat-label">Original Tokens</span>
                         <span class="stat-value" id="originalTokens">0</span>
@@ -600,7 +581,6 @@
             </div>
         </div>
 
-        <!-- Examples -->
         <div class="examples">
             <h4>💡 Try these examples:</h4>
             <div class="example-buttons">
@@ -611,7 +591,6 @@
             </div>
         </div>
 
-        <!-- Footer -->
         <footer>
             <p>Made with ❤️ · Open-source · MIT License</p>
         </footer>
@@ -622,10 +601,20 @@
         // TOKEN OPTIMIZER - Complete JavaScript
         // ============================================================
 
-        // ---- Token Counter (Approximate) ----
-        function countTokens(text) {
+        console.log('✅ Token Optimizer loaded successfully!');
+
+        // ---- Token Counter ----
+        function estimateTokens(text) {
             if (!text) return 0;
-            return Math.ceil(text.length / 4);
+            const codeChars = (text.match(/[{}()\[\];<>]/g) || []).length;
+            const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '').length;
+            return Math.ceil((alphanumeric / 4.5) + (codeChars / 2));
+        }
+
+        // ---- Helpers ----
+        function extractFirstMatch(text, pattern) {
+            const match = text.match(pattern);
+            return match ? match[1] : null;
         }
 
         // ---- Optimization Modes ----
@@ -742,7 +731,6 @@
             compress: (text) => {
                 const lines = text.split('\n');
                 const compressed = [];
-                let currentSection = '';
                 
                 for (const line of lines) {
                     const trimmed = line.trim();
@@ -750,7 +738,6 @@
                     
                     if (/^#{1,3}\s/.test(trimmed) || /^[A-Z][A-Z_\s]+$/.test(trimmed)) {
                         compressed.push(trimmed);
-                        currentSection = trimmed;
                     } else if (/^(https?:\/\/|\.\/|\/|npm|yarn|pip|go get)/.test(trimmed)) {
                         compressed.push(`🔗 ${trimmed}`);
                     } else if (/^(export|import|const|let|var|function|class|interface|type)/.test(trimmed)) {
@@ -769,20 +756,6 @@
             }
         };
 
-        // ---- Helpers ----
-        function extractFirstMatch(text, pattern) {
-            const match = text.match(pattern);
-            return match ? match[1] : null;
-        }
-
-        function estimateTokens(text) {
-            if (!text) return 0;
-            const codeChars = (text.match(/[{}()\[\];<>]/g) || []).length;
-            const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '').length;
-            return Math.ceil((alphanumeric / 4.5) + (codeChars / 2));
-        }
-
-        // ---- Main Optimization Function ----
         function optimizeText(text, mode) {
             if (!text || !text.trim()) return { optimized: '', originalTokens: 0, optimizedTokens: 0 };
             
@@ -801,8 +774,6 @@
         // ============================================================
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ Token Optimizer loaded successfully!');
-
             const inputText = document.getElementById('inputText');
             const outputContent = document.getElementById('outputContent');
             const optimizeBtn = document.getElementById('optimizeBtn');
@@ -817,14 +788,12 @@
             const optimizedTokens = document.getElementById('optimizedTokens');
             const compressionRate = document.getElementById('compressionRate');
             
-            // Tabs
             const tabs = document.querySelectorAll('.tab');
             const tabContents = {
                 text: document.getElementById('text-tab'),
                 file: document.getElementById('file-tab')
             };
             
-            // File upload
             const uploadZone = document.getElementById('uploadZone');
             const fileInput = document.getElementById('fileInput');
             const fileList = document.getElementById('fileList');
@@ -911,13 +880,13 @@
 
             // ---- Example Buttons ----
             const examples = {
-                'verbose': `I inspected the authentication middleware and found that the issue appears to be caused by the token expiry check not properly rejecting expired JWTs before the request is passed to the route handler. I recommend adding a guard and then adding a regression test to ensure that this edge case is properly handled going forward. Additionally, we should update the documentation to reflect this change.`,
+                'verbose': `I inspected the authentication middleware and found that the issue appears to be caused by the token expiry check not properly rejecting expired JWTs before the request is passed to the route handler. I recommend adding a guard and then adding a regression test to ensure that this edge case is properly handled going forward.`,
                 
-                'code-review': `The API endpoint implementation looks mostly good. The error handling could be improved though - we should add more specific error messages for different failure scenarios. Also, consider using a more efficient pagination strategy for large result sets. The tests cover the happy path but we should add more edge cases.`,
+                'code-review': `The API endpoint implementation looks mostly good. The error handling could be improved though - we should add more specific error messages for different failure scenarios. Also, consider using a more efficient pagination strategy for large result sets.`,
                 
-                'debug': `Error: Connection timeout after 30 seconds while trying to reach the database. The issue is caused by the connection pool being exhausted due to long-running queries. Fix: Increase connection pool size from 10 to 25 and add query timeout of 15 seconds. Test: Added integration test that simulates concurrent connections to verify pool behavior.`,
+                'debug': `Error: Connection timeout after 30 seconds while trying to reach the database. The issue is caused by the connection pool being exhausted due to long-running queries. Fix: Increase connection pool size from 10 to 25 and add query timeout of 15 seconds. Test: Added integration test that simulates concurrent connections.`,
                 
-                'commit': `This is a feature that adds support for dark mode across all pages. It includes CSS variables, theme switching logic, and persists user preference in localStorage. Also updated the header and sidebar components to use the new theme system.`
+                'commit': `This is a feature that adds support for dark mode across all pages. It includes CSS variables, theme switching logic, and persists user preference in localStorage.`
             };
             
             document.querySelectorAll('.example-btn').forEach(btn => {
@@ -926,7 +895,6 @@
                     if (examples[example]) {
                         inputText.value = examples[example];
                         updateCounts();
-                        // Switch to text tab
                         document.querySelector('.tab[data-tab="text"]').click();
                     }
                 });
@@ -934,9 +902,8 @@
 
             // ---- OPTIMIZE BUTTON ----
             optimizeBtn.addEventListener('click', function() {
-                console.log('🔍 Optimize button clicked!');
+                console.log('🔍 Optimize clicked!');
                 const text = inputText.value;
-                console.log('📝 Input text length:', text.length);
                 
                 if (!text || !text.trim()) {
                     outputContent.innerHTML = '<p class="placeholder">⚠️ Please enter some text to optimize.</p>';
@@ -944,14 +911,10 @@
                 }
                 
                 const mode = modeSelect.value;
-                console.log('🎯 Mode selected:', mode);
                 const result = optimizeText(text, mode);
-                console.log('✅ Optimization complete!');
                 
-                // Display output
                 outputContent.textContent = result.optimized;
                 
-                // Update stats
                 originalTokens.textContent = result.originalTokens;
                 optimizedTokens.textContent = result.optimizedTokens;
                 const rate = result.originalTokens > 0 
@@ -959,7 +922,6 @@
                     : 0;
                 compressionRate.textContent = rate + '%';
                 
-                // Color code compression
                 if (rate > 50) {
                     compressionRate.style.color = '#4ADE80';
                 } else if (rate > 20) {
@@ -971,7 +933,7 @@
 
             // ---- CLEAR BUTTON ----
             clearBtn.addEventListener('click', function() {
-                console.log('🧹 Clear button clicked');
+                console.log('🧹 Clear clicked');
                 inputText.value = '';
                 outputContent.innerHTML = '<p class="placeholder">Your optimized output will appear here...</p>';
                 originalTokens.textContent = '0';
@@ -998,4 +960,41 @@
             // ---- DOWNLOAD BUTTON ----
             downloadBtn.addEventListener('click', function() {
                 const text = outputContent.textContent;
-                if (text && !text.includes('Your optimized output will appear here'))
+                if (text && !text.includes('Your optimized output will appear here')) {
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `optimized-${Date.now()}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }
+            });
+
+            // ---- COMPARE BUTTON ----
+            compareBtn.addEventListener('click', function() {
+                const original = inputText.value;
+                const optimized = outputContent.textContent;
+                if (!original || !optimized || optimized.includes('Your optimized output will appear here')) {
+                    return;
+                }
+                
+                const origTokens = estimateTokens(original);
+                const optTokens = estimateTokens(optimized);
+                const saved = origTokens - optTokens;
+                const rate = origTokens > 0 ? Math.round((saved / origTokens) * 100) : 0;
+                
+                alert(
+                    `📊 Token Comparison\n\n` +
+                    `Original:  ${origTokens} tokens\n` +
+                    `Optimized: ${optTokens} tokens\n` +
+                    `Saved:     ${saved} tokens (${rate}% reduction)\n\n` +
+                    `${rate > 50 ? '🌟 Excellent compression!' : rate > 20 ? '👍 Good compression!' : '📝 Moderate compression'}`
+                );
+            });
+
+            console.log('✅ All event listeners registered!');
+        });
+    </script>
+</body>
+</html>
