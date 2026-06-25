@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Optimizer - Slate Style</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Token<span class="highlight">Optimizer</span></span>
+            </div>
+            <p class="tagline">Compress noise. Never compress risk.</p>
+        </header>
+
+        <!-- Main Card -->
+        <div class="card">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="tabs">
+                    <button class="tab active" data-tab="text">📝 Paste Text</button>
+                    <button class="tab" data-tab="file">📁 Upload File</button>
+                </div>
+
+                <!-- Text Input -->
+                <div class="tab-content active" id="text-tab">
+                    <textarea id="inputText"
+                        placeholder="Paste your verbose AI agent output, code review, commit message, or any text you want to optimize..."></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span> characters · <span id="wordCount">0</span> words
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div class="tab-content" id="file-tab">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">📄</div>
+                        <p>Drop your file here or <span class="browse-link">browse</span></p>
+                        <p class="upload-hint">Supports .txt, .md, .json, .log, .csv</p>
+                        <input type="file" id="fileInput" accept=".txt,.md,.json,.log,.csv" multiple>
+                    </div>
+                    <div id="fileList" class="file-list"></div>
+                </div>
+
+                <!-- Optimization Mode -->
+                <div class="mode-selector">
+                    <label>Optimization Mode:</label>
+                    <select id="optimizationMode">
+                        <option value="slate">Slate - General Engineering Mode</option>
+                        <option value="minify">Minify - Sentence-Level Compression</option>
+                        <option value="debug">Debug - Error → Cause → Fix → Proof</option>
+                        <option value="diff">Diff - Compact Patch Summary</option>
+                        <option value="review">Review - Terse Code Review</option>
+                        <option value="commit">Commit - Conventional Commit</option>
+                        <option value="compress">Compress - Memory/Docs Compression</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="optimizeBtn" class="btn-primary">
+                        <span>⚡</span> Optimize
+                    </button>
+                    <button id="clearBtn" class="btn-secondary">Clear All</button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <div class="output-header">
+                    <h3>Optimized Output</h3>
+                    <div class="output-actions">
+                        <button id="copyBtn" class="btn-icon" title="Copy to clipboard">📋</button>
+                        <button id="downloadBtn" class="btn-icon" title="Download as .txt">💾</button>
+                        <button id="compareBtn" class="btn-icon" title="Show token comparison">📊</button>
+                    </div>
+                </div>
+                <div id="outputContent" class="output-content">
+                    <p class="placeholder">Your optimized output will appear here...</p>
+                </div>
+                <div class="stats" id="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Original Tokens</span>
+                        <span class="stat-value" id="originalTokens">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Optimized Tokens</span>
+                        <span class="stat-value" id="optimizedTokens">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Compression</span>
+                        <span class="stat-value highlight" id="compressionRate">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Examples -->
+        <div class="examples">
+            <h4>💡 Try these examples:</h4>
+            <div class="example-buttons">
+                <button class="example-btn" data-example="verbose">Verbose Agent Output</button>
+                <button class="example-btn" data-example="code-review">Code Review</button>
+                <button class="example-btn" data-example="debug">Debug Log</button>
+                <button class="example-btn" data-example="commit">Commit Message</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Made with ❤️ · Open-source · MIT License</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
