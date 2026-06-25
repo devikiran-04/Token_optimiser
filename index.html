@@ -1,14 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Token Optimizer - Slate Style</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-</head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5A52D5;
+            --primary-light: #8B83FF;
+            --bg: #0A0A0F;
+            --bg-card: #14141E;
+            --bg-input: #1A1A2E;
+            --border: #2A2A3E;
+            --text: #E8E8F0;
+            --text-secondary: #8888AA;
+            --text-muted: #555577;
+            --success: #4ADE80;
+            --warning: #FBBF24;
+            --danger: #F87171;
+            --radius: 16px;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, rgba(108, 99, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(108, 99, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 20px 0 10px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+        }
+
+        .highlight {
+            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        /* Input Section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-input);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        #inputText {
+            width: 100%;
+            min-height: 280px;
+            padding: 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.7;
+            resize: vertical;
+            font-family: 'Inter', monospace;
+            transition: border-color 0.2s;
+        }
+
+        #inputText:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .char-count {
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 4px 12px;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 48px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-input);
+        }
+
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .browse-link {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .upload-hint {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 12px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .file-item .file-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .file-item .file-size {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .file-item .file-remove {
+            cursor: pointer;
+            color: var(--danger);
+            font-size: 18px;
+            background: none;
+            border: none;
+        }
+
+        /* Mode Selector */
+        .mode-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .mode-selector label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .mode-selector select {
+            flex: 1;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .mode-selector select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        /* Output Section */
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .output-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-icon {
+            padding: 6px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .btn-icon:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .output-content {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: 'Inter', monospace;
+        }
+
+        .output-content .placeholder {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .stat-item {
+            background: var(--bg-input);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .stat-value.highlight {
+            -webkit-text-fill-color: var(--success);
+        }
+
+        /* Examples */
+        .examples {
+            text-align: center;
+            padding: 12px 0;
+        }
+
+        .examples h4 {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .example-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            padding: 8px 18px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-btn:hover {
+            background: var(--border);
+            color: var(--text);
+            border-color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 12px 0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-input);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .card {
+                padding: 16px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
 <body>
     <div class="container">
         <!-- Header -->
@@ -31,8 +530,7 @@
 
                 <!-- Text Input -->
                 <div class="tab-content active" id="text-tab">
-                    <textarea id="inputText"
-                        placeholder="Paste your verbose AI agent output, code review, commit message, or any text you want to optimize..."></textarea>
+                    <textarea id="inputText" placeholder="Paste your verbose AI agent output, code review, commit message, or any text you want to optimize..."></textarea>
                     <div class="char-count">
                         <span id="charCount">0</span> characters · <span id="wordCount">0</span> words
                     </div>
@@ -119,7 +617,385 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <script>
+        // ============================================================
+        // TOKEN OPTIMIZER - Complete JavaScript
+        // ============================================================
 
-</html>
+        // ---- Token Counter (Approximate) ----
+        function countTokens(text) {
+            if (!text) return 0;
+            return Math.ceil(text.length / 4);
+        }
+
+        // ---- Optimization Modes ----
+        const optimizers = {
+            slate: (text) => {
+                const lines = text.split('\n').filter(l => l.trim());
+                const firstLine = lines[0] || '';
+                const hasError = /error|fail|bug|issue|exception/i.test(text);
+                const hasFix = /fix|solution|resolve|patch/i.test(text);
+                
+                let result = [];
+                if (hasError) {
+                    const cause = extractFirstMatch(text, /(?:cause|issue|problem|error|bug)[:\s]+([^\n.]+)/i) || 'Issue detected';
+                    result.push(`Cause: ${cause.trim()}`);
+                }
+                if (hasFix) {
+                    const fix = extractFirstMatch(text, /(?:fix|solution|resolve|patch)[:\s]+([^\n.]+)/i) || 'Apply fix';
+                    result.push(`Fix: ${fix.trim()}`);
+                }
+                if (!hasError && !hasFix) {
+                    result.push(`Summary: ${firstLine.substring(0, 100)}`);
+                    const keyPoints = text.match(/[A-Z][^.!?]*[.!?]/g) || [];
+                    if (keyPoints.length > 1) {
+                        result.push(`Details: ${keyPoints.slice(1, 4).map(s => s.trim()).join(' ')}`);
+                    }
+                }
+                const risk = extractFirstMatch(text, /(?:risk|danger|warning|security)[:\s]+([^\n.]+)/i);
+                if (risk) result.push(`Risk: ${risk.trim()}`);
+                if (result.length === 0) {
+                    result.push(`Compacted: ${text.substring(0, 150).replace(/\s+/g, ' ')}...`);
+                }
+                return result.join('\n');
+            },
+
+            minify: (text) => {
+                return text
+                    .replace(/\b(very|really|quite|extremely|absolutely|totally)\b/gi, '')
+                    .replace(/\b(in order to|for the purpose of)\b/gi, 'to')
+                    .replace(/\b(due to the fact that|because of the fact that)\b/gi, 'because')
+                    .replace(/\b(at this point in time|at the present time)\b/gi, 'now')
+                    .replace(/\b(in the event that)\b/gi, 'if')
+                    .replace(/\s{2,}/g, ' ')
+                    .trim();
+            },
+
+            debug: (text) => {
+                const error = extractFirstMatch(text, /(?:error|exception|fail)[:\s]+([^\n.]+)/i) || 'Unknown error';
+                const cause = extractFirstMatch(text, /(?:cause|because|due to|triggered by)[:\s]+([^\n.]+)/i) || 'Under investigation';
+                const fix = extractFirstMatch(text, /(?:fix|solution|resolve|patch)[:\s]+([^\n.]+)/i) || 'Fix pending';
+                const proof = extractFirstMatch(text, /(?:test|proof|verify|confirm)[:\s]+([^\n.]+)/i) || 'Verification needed';
+                
+                return `Error: ${error.trim()}\nCause: ${cause.trim()}\nFix: ${fix.trim()}\nProof: ${proof.trim()}`;
+            },
+
+            diff: (text) => {
+                const files = text.match(/[`"']([^`"']+\.[a-z]+)[`"']/gi) || [];
+                const changes = extractFirstMatch(text, /(?:change|modify|update|add|remove)[:\s]+([^\n.]+)/i) || 'Changes applied';
+                const status = extractFirstMatch(text, /(?:status|result|outcome)[:\s]+([^\n.]+)/i) || 'OK';
+                
+                let result = [];
+                if (files.length) result.push(`Files: ${files.slice(0, 5).join(', ')}`);
+                result.push(`Change: ${changes.trim()}`);
+                result.push(`Status: ${status.trim()}`);
+                return result.join('\n');
+            },
+
+            review: (text) => {
+                const positives = text.match(/(?:good|nice|great|well|clean)[^.!?]*[.!?]/gi) || [];
+                const issues = text.match(/(?:issue|problem|bug|concern|nit|suggestion)[^.!?]*[.!?]/gi) || [];
+                const questions = text.match(/\?/g) || [];
+                
+                let result = [];
+                if (positives.length) result.push(`✅ ${positives.slice(0, 2).map(s => s.trim()).join(' ')}`);
+                if (issues.length) result.push(`⚠️ ${issues.slice(0, 3).map(s => s.trim()).join(' ')}`);
+                if (questions.length) result.push(`❓ ${questions.length} questions raised`);
+                if (result.length === 0) result.push('Review: No significant comments');
+                return result.join('\n');
+            },
+
+            commit: (text) => {
+                const typeMap = {
+                    'fix': ['fix', 'bug', 'error', 'issue'],
+                    'feat': ['feature', 'add', 'new'],
+                    'docs': ['doc', 'readme', 'comment'],
+                    'style': ['style', 'format', 'lint'],
+                    'refactor': ['refactor', 'restructure'],
+                    'test': ['test', 'spec'],
+                    'chore': ['chore', 'build', 'config']
+                };
+                
+                let type = 'chore';
+                let scope = '';
+                let subject = text.substring(0, 72);
+                
+                const lower = text.toLowerCase();
+                for (const [key, words] of Object.entries(typeMap)) {
+                    if (words.some(w => lower.includes(w))) {
+                        type = key;
+                        break;
+                    }
+                }
+                
+                const scopeMatch = text.match(/(?:in|for|of|to)\s+([a-z-]+)/i);
+                if (scopeMatch) scope = scopeMatch[1];
+                
+                subject = subject.replace(/^(fix|feat|docs|style|refactor|test|chore):\s*/i, '');
+                subject = subject.replace(/[^a-zA-Z0-9\s\-_.]/g, '').trim();
+                if (subject.length > 72) subject = subject.substring(0, 72) + '...';
+                
+                const scopePart = scope ? `(${scope})` : '';
+                return `${type}${scopePart}: ${subject}`;
+            },
+
+            compress: (text) => {
+                const lines = text.split('\n');
+                const compressed = [];
+                let currentSection = '';
+                
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (!trimmed) continue;
+                    
+                    if (/^#{1,3}\s/.test(trimmed) || /^[A-Z][A-Z_\s]+$/.test(trimmed)) {
+                        compressed.push(trimmed);
+                        currentSection = trimmed;
+                    } else if (/^(https?:\/\/|\.\/|\/|npm|yarn|pip|go get)/.test(trimmed)) {
+                        compressed.push(`🔗 ${trimmed}`);
+                    } else if (/^(export|import|const|let|var|function|class|interface|type)/.test(trimmed)) {
+                        compressed.push(`📦 ${trimmed.substring(0, 80)}`);
+                    } else if (trimmed.length > 10 && !/^[^a-zA-Z]*$/.test(trimmed)) {
+                        const words = trimmed.split(/\s+/);
+                        if (words.length > 15) {
+                            compressed.push(`• ${words.slice(0, 10).join(' ')}...`);
+                        } else {
+                            compressed.push(`• ${trimmed}`);
+                        }
+                    }
+                }
+                
+                return compressed.join('\n') || text.substring(0, 200);
+            }
+        };
+
+        // ---- Helpers ----
+        function extractFirstMatch(text, pattern) {
+            const match = text.match(pattern);
+            return match ? match[1] : null;
+        }
+
+        function estimateTokens(text) {
+            if (!text) return 0;
+            const codeChars = (text.match(/[{}()\[\];<>]/g) || []).length;
+            const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '').length;
+            return Math.ceil((alphanumeric / 4.5) + (codeChars / 2));
+        }
+
+        // ---- Main Optimization Function ----
+        function optimizeText(text, mode) {
+            if (!text || !text.trim()) return { optimized: '', originalTokens: 0, optimizedTokens: 0 };
+            
+            const optimizer = optimizers[mode] || optimizers.slate;
+            const optimized = optimizer(text);
+            
+            return {
+                optimized: optimized,
+                originalTokens: estimateTokens(text),
+                optimizedTokens: estimateTokens(optimized)
+            };
+        }
+
+        // ============================================================
+        // UI CONTROLLER
+        // ============================================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Token Optimizer loaded successfully!');
+
+            const inputText = document.getElementById('inputText');
+            const outputContent = document.getElementById('outputContent');
+            const optimizeBtn = document.getElementById('optimizeBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const compareBtn = document.getElementById('compareBtn');
+            const modeSelect = document.getElementById('optimizationMode');
+            const charCount = document.getElementById('charCount');
+            const wordCount = document.getElementById('wordCount');
+            const originalTokens = document.getElementById('originalTokens');
+            const optimizedTokens = document.getElementById('optimizedTokens');
+            const compressionRate = document.getElementById('compressionRate');
+            
+            // Tabs
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = {
+                text: document.getElementById('text-tab'),
+                file: document.getElementById('file-tab')
+            };
+            
+            // File upload
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+            const fileList = document.getElementById('fileList');
+            let uploadedFiles = [];
+
+            // ---- Tab Switching ----
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    const tabName = this.dataset.tab;
+                    Object.keys(tabContents).forEach(key => {
+                        tabContents[key].classList.toggle('active', key === tabName);
+                    });
+                });
+            });
+
+            // ---- File Upload ----
+            uploadZone.addEventListener('click', () => fileInput.click());
+            
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('drag-over');
+            });
+            
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('drag-over');
+            });
+            
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('drag-over');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+                fileInput.value = '';
+            });
+
+            function handleFiles(files) {
+                for (const file of files) {
+                    uploadedFiles.push(file);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const content = e.target.result;
+                        const separator = inputText.value ? '\n---\n' : '';
+                        inputText.value += separator + content;
+                        updateCounts();
+                        renderFileList();
+                    };
+                    reader.readAsText(file);
+                }
+            }
+
+            function renderFileList() {
+                fileList.innerHTML = uploadedFiles.map((f, i) => `
+                    <div class="file-item">
+                        <span class="file-name">📄 ${f.name}</span>
+                        <span class="file-size">${(f.size / 1024).toFixed(1)} KB</span>
+                        <button class="file-remove" data-index="${i}">✕</button>
+                    </div>
+                `).join('');
+                
+                document.querySelectorAll('.file-remove').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        uploadedFiles.splice(index, 1);
+                        renderFileList();
+                    });
+                });
+            }
+
+            // ---- Input Tracking ----
+            inputText.addEventListener('input', updateCounts);
+            
+            function updateCounts() {
+                const text = inputText.value;
+                const chars = text.length;
+                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                charCount.textContent = chars;
+                wordCount.textContent = words;
+            }
+
+            // ---- Example Buttons ----
+            const examples = {
+                'verbose': `I inspected the authentication middleware and found that the issue appears to be caused by the token expiry check not properly rejecting expired JWTs before the request is passed to the route handler. I recommend adding a guard and then adding a regression test to ensure that this edge case is properly handled going forward. Additionally, we should update the documentation to reflect this change.`,
+                
+                'code-review': `The API endpoint implementation looks mostly good. The error handling could be improved though - we should add more specific error messages for different failure scenarios. Also, consider using a more efficient pagination strategy for large result sets. The tests cover the happy path but we should add more edge cases.`,
+                
+                'debug': `Error: Connection timeout after 30 seconds while trying to reach the database. The issue is caused by the connection pool being exhausted due to long-running queries. Fix: Increase connection pool size from 10 to 25 and add query timeout of 15 seconds. Test: Added integration test that simulates concurrent connections to verify pool behavior.`,
+                
+                'commit': `This is a feature that adds support for dark mode across all pages. It includes CSS variables, theme switching logic, and persists user preference in localStorage. Also updated the header and sidebar components to use the new theme system.`
+            };
+            
+            document.querySelectorAll('.example-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const example = this.dataset.example;
+                    if (examples[example]) {
+                        inputText.value = examples[example];
+                        updateCounts();
+                        // Switch to text tab
+                        document.querySelector('.tab[data-tab="text"]').click();
+                    }
+                });
+            });
+
+            // ---- OPTIMIZE BUTTON ----
+            optimizeBtn.addEventListener('click', function() {
+                console.log('🔍 Optimize button clicked!');
+                const text = inputText.value;
+                console.log('📝 Input text length:', text.length);
+                
+                if (!text || !text.trim()) {
+                    outputContent.innerHTML = '<p class="placeholder">⚠️ Please enter some text to optimize.</p>';
+                    return;
+                }
+                
+                const mode = modeSelect.value;
+                console.log('🎯 Mode selected:', mode);
+                const result = optimizeText(text, mode);
+                console.log('✅ Optimization complete!');
+                
+                // Display output
+                outputContent.textContent = result.optimized;
+                
+                // Update stats
+                originalTokens.textContent = result.originalTokens;
+                optimizedTokens.textContent = result.optimizedTokens;
+                const rate = result.originalTokens > 0 
+                    ? Math.round((1 - result.optimizedTokens / result.originalTokens) * 100)
+                    : 0;
+                compressionRate.textContent = rate + '%';
+                
+                // Color code compression
+                if (rate > 50) {
+                    compressionRate.style.color = '#4ADE80';
+                } else if (rate > 20) {
+                    compressionRate.style.color = '#FBBF24';
+                } else {
+                    compressionRate.style.color = '#F87171';
+                }
+            });
+
+            // ---- CLEAR BUTTON ----
+            clearBtn.addEventListener('click', function() {
+                console.log('🧹 Clear button clicked');
+                inputText.value = '';
+                outputContent.innerHTML = '<p class="placeholder">Your optimized output will appear here...</p>';
+                originalTokens.textContent = '0';
+                optimizedTokens.textContent = '0';
+                compressionRate.textContent = '0%';
+                compressionRate.style.color = '';
+                updateCounts();
+                uploadedFiles = [];
+                fileList.innerHTML = '';
+            });
+
+            // ---- COPY BUTTON ----
+            copyBtn.addEventListener('click', function() {
+                const text = outputContent.textContent;
+                if (text && !text.includes('Your optimized output will appear here')) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        const original = copyBtn.textContent;
+                        copyBtn.textContent = '✅';
+                        setTimeout(() => copyBtn.textContent = original, 2000);
+                    });
+                }
+            });
+
+            // ---- DOWNLOAD BUTTON ----
+            downloadBtn.addEventListener('click', function() {
+                const text = outputContent.textContent;
+                if (text && !text.includes('Your optimized output will appear here'))
